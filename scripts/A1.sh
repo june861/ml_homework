@@ -1,15 +1,15 @@
 echo "Machine Learning Homework A1"
 optimizer=(
-    "adam",
-    "sgd",
-    "adamw",
-    "adagrad",
-    "momentum",
+    "adam"
+    # "sgd"
+    # "adamw"
+    # "adagrad"
+    # "momentum"
 )
-
+    
 loss=(
-    "entropy",
-    "mse",
+    "entropy"
+    "mse"
 )
 epochs=50
 batch_size=64

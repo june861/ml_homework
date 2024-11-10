@@ -51,7 +51,7 @@ def main(args):
                                     Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5)),
                                     FlattenTo1D(),
                                 ])
-    transform_eval = transforms.Compose([ToTensor(),FlattenTo1D(),])
+    transform_eval = transform
 
     # load dataset
     cifar10_datasets = CIFAR10(transform_train = transform, transforma_eval = transform_eval, split_ratio = 0.3)
