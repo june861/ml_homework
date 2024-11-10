@@ -4,6 +4,7 @@ data/
 runs/
 wandb/
 result/
+logs/
 
 # 忽略所有 .pyc 文件
 *.pyc

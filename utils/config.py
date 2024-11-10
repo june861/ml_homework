@@ -16,6 +16,7 @@ def get_config():
     parser.add_argument("--use_cuda", action="store_false", default=True, help="whether use cuda device to execute training process")
     parser.add_argument("--cuda_rank", type=int, default=0, help="which cuda device to use")
     parser.add_argument("--use_wandb", action="store_true", default=False, help="use wandb or tensorboard")
+    parser.add_argument("--seed", type=int, default=1, help="random seed")
 
     # A1
     parser.add_argument("--batch_size", type=int, default=64, help="batch size of a batch data")
