@@ -5,11 +5,16 @@
 @Author  :   junewluo 
 '''
 
+import random
+import os
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
+from sklearn.model_selection import KFold
+
 
 def check(input):
     return torch.from_numpy(input) if type(input) == np.ndarray else input
@@ -46,8 +51,48 @@ def which_loss_criterion(loss_name):
 
 def get_activate_func(activate_func_name):
     if activate_func_name == "relu":
-        return F.relu
+        return nn.ReLU()
     elif activate_func_name == "sigmoid":
-        return F.sigmoid
+        return nn.Sigmoid()
     elif activate_func_name == "tanh":
-        return F.tanh
+        return nn.Tanh()
+
+def get_pool_func(pool_method, pool_size = (2,2), stride = None, pool_padding = 0):
+    if pool_method == "max_pool":
+        return nn.MaxPool2d(kernel_size = pool_size, stride = stride, padding = pool_padding)
+    elif pool_method == "avg_pool":
+        return nn.AvgPool2d(kernel_size = pool_size, stride = stride, padding = pool_padding)
+    else:
+        raise NotImplementedError
+
+def set_seed(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    os.environ['PYTHONASHSEED'] = str(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+
+def Kfold_Dataset(kfolds = 5, shuffle = True):
+    return KFold(n_splits = kfolds, shuffle = shuffle)
+
+
+def regular_normalization_name(args):
+    if args.use_l1_norm:
+        regular = "L1"
+    elif args.use_l2_norm:
+        regular = "L2"
+    else:
+        regular = "null"
+    
+    if args.use_layer_norm:
+        normalization = f"layernorm{args._laryer_norm_method}"
+    elif args.use_dropout:
+        normalization = f"dropout({args._dropout_ratio})"
+    else:
+        normalization = "null"
+    
+    return regular, normalization

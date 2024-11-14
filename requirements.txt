@@ -1,0 +1,11 @@
+loguru==0.7.2
+matplotlib==3.9.2
+numpy==1.23.0
+scikit_learn==1.5.2
+seaborn==0.13.2
+setuptools==75.1.0
+tensorboardX==2.6.2.2
+tensorboardX==2.6.2.2
+torch==2.5.1
+torchvision==0.20.1
+wandb==0.18.7

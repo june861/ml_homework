@@ -1,3 +1,26 @@
 Metadata-Version: 2.1
 Name: ml_homework
 Version: 0.1
+Author: junweiluo
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Requires-Dist: loguru==0.7.2
+Requires-Dist: matplotlib==3.9.2
+Requires-Dist: numpy==1.23.0
+Requires-Dist: scikit_learn==1.5.2
+Requires-Dist: seaborn==0.13.2
+Requires-Dist: setuptools==75.1.0
+Requires-Dist: tensorboardX==2.6.2.2
+Requires-Dist: tensorboardX==2.6.2.2
+Requires-Dist: torch==2.5.1
+Requires-Dist: torchvision==0.20.1
+Requires-Dist: wandb==0.18.7
+
+## 北邮高级机器学习课后作业
+
+```bash
+git clone git@github.com:june861/ml_homework.git
+cd ml_homework
+pip install -e .
+```
+

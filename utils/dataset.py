@@ -5,7 +5,7 @@
 @Author  :   junewluo 
 '''
 
-
+import random
 import torch
 import torchvision
 from torch.utils.data import random_split
@@ -52,7 +52,7 @@ class CIFAR10(object):
         train_length = len(self.train_data) - valid_length 
         train_dataset, valid_dataset = random_split(dataset = self.train_data, 
                                                 lengths= [train_length, valid_length], 
-                                                generator = torch.Generator().manual_seed(0)
+                                                generator = torch.Generator().manual_seed(random.randint(0,100))
                                                 )
         
         self.train_data = train_dataset

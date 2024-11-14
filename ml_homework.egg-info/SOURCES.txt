@@ -1,9 +1,12 @@
+README.md
 setup.py
 ml_homework.egg-info/PKG-INFO
 ml_homework.egg-info/SOURCES.txt
 ml_homework.egg-info/dependency_links.txt
+ml_homework.egg-info/requires.txt
 ml_homework.egg-info/top_level.txt
 utils/__init__.py
+utils/cnn.py
 utils/config.py
 utils/dataset.py
 utils/mlp.py
