@@ -10,6 +10,7 @@ import time
 import torch
 import wandb
 import sys
+import pandas as pd
 import matplotlib.pyplot as plt
 from scripts.learners.a2_learner import A2_Learner
 from utils import (
@@ -43,7 +44,7 @@ def parse_args(args, parser: argparse.ArgumentParser):
 
     parser.add_argument("--use_l1_norm", action="store_true", default=False, help="")
     parser.add_argument("--l1_norm_lambda", type=float, default=0.01, help="L1-regularization weight")
-    parser.add_argument("--use_l2_norm", action="store_true", default=False, help="")
+    parser.add_argument("--use_l2_norm", action="store_true", default=True, help="")
     parser.add_argument("--l2_norm_lambda", type=float, default=0.01, help="L2-regularization weight")
 
 
@@ -85,6 +86,7 @@ def main(args):
     
     best_test_acc = 0.0
     best_classifier = None
+    accs = []
     regular, normalization = regular_normalization_name(all_args)
 
     for fold, (train_indexs, valid_index) in enumerate(kfold.split(cifar10_datasets.train_data)):
@@ -109,39 +111,21 @@ def main(args):
         valid_loader = DataLoader(dataset = cifar10_datasets.train_data, sampler = valid_sampler, batch_size = all_args.batch_size)
         
         cnn_cifar10 = A2_Learner(args = all_args)
-        cnn_cifar10.learn(train_loader, valid_loader, eval_loader)
+        train_acc, valid_acc = cnn_cifar10.learn(train_loader, valid_loader, eval_loader)
 
         fig_name = f"A2-{regular}_{normalization}_{fold}_{all_args.seed}.png"
         _, test_acc, test_loss = cnn_cifar10.eval(cnn_cifar10.eval_loader, make_confuse = True, fig_name = fig_name)
+        
+        accs.append((train_acc, valid_acc, test_acc))
         if test_acc > best_test_acc:
             best_classifier = (fold, train_indexs, valid_index)
             best_test_acc = test_acc
-
-    print("cross entropy")
+    
+    acc_dataframe = pd.DataFrame(accs, columns = ["train_acc", "valid_acc", "test_acc"])
+    logger.success(f"cross-validation result:\n{acc_dataframe}")
+    logger.success(f"cross-validation found best parameters in fold{best_classifier[0]}, best_test_acc is {best_test_acc}")
         
 
-
-    # cifar10_datasets.random_split_data()
-
-    # train_loader = DataLoader(dataset = cifar10_datasets.train_data, batch_size = all_args.batch_size)
-    # valid_loader = DataLoader(dataset = cifar10_datasets.valid_data, batch_size = all_args.batch_size)
-    # 
-
-    # define classification instance
-    cifar_classification = A2_Learner(args = all_args)
-
-    cifar_classification.learn(train_loader, valid_loader, eval_loader)
-    fig_name, test_acc, _ = cifar_classification.eval(dataloader = cifar_classification.eval_loader, make_confuse = True)
-
-    if all_args.use_wandb:
-        wandb.log({str(fig_name) : wandb.Image(os.path.join("./result/", fig_name))})
-    else:
-        index = 0
-        image = plt.imread(os.path.join("./result/", fig_name))
-        img_tensor = torch.from_numpy(image).permute(2, 0, 1).float()
-        tag = f'{all_args.optim}_{all_args.loss}_{all_args.batch_size}_{index}'
-        tb_writer.add_image(tag = tag, img_tensor = img_tensor[:3, :, :])
-        
 
 if __name__ == "__main__":
     main(sys.argv[1:])

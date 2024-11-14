@@ -89,9 +89,9 @@ def regular_normalization_name(args):
         regular = "null"
     
     if args.use_layer_norm:
-        normalization = f"layernorm{args._laryer_norm_method}"
+        normalization = f"layernorm{args.layer_norm_method}"
     elif args.use_dropout:
-        normalization = f"dropout({args._dropout_ratio})"
+        normalization = f"dropout({args.dropout_ratio})"
     else:
         normalization = "null"
     

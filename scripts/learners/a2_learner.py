@@ -60,11 +60,14 @@ class A2_Learner(BaseLearner):
                            dropout_ratio = self._dropout_ratio,
                         ).to(self._device)
         logger.success(self.net)
-        self.optimizer = get_optimizer(optim_name = args.optim, net = self.net, lr = args.lr, momentum = args.momentum)
+        self.optimizer = get_optimizer(optim_name = args.optim, net = self.net, lr = self._lr, momentum = args.momentum)
         self.criterion = which_loss_criterion(loss_name = self._loss)
 
-    def linear_lr_decay(self):
-        return super().linear_lr_decay()
+    def linear_lr_decay(self, cur_steps, total_steps):
+        lr_now = max(1e-5, self._lr * (1 - cur_steps / total_steps))
+        for p in self.optimizer.param_groups:
+            p['lr'] = lr_now
+        self._lr = lr_now
     
     def make_confuse_matrix(self, y_true, y_pred, fig_name):
         cm = confusion_matrix(y_true, y_pred)
@@ -85,9 +88,9 @@ class A2_Learner(BaseLearner):
             probs = self.net(x)
 
             if self._use_l1_norm:
-                regular = torch.sum(torch.sum(torch.abs(param)) for param in self.net.parameters()) * self._l1_norm_lambda
+                regular = sum(torch.sum(torch.abs(param)) for param in self.net.parameters()) * self._l1_norm_lambda
             elif self._use_l2_norm:
-                regular = torch.sum(p.pow(2.0).sum() for p in self.net.parameters()) * self._l2_norm_lambda
+                regular = sum(p.pow(2.0).sum() for p in self.net.parameters()) * self._l2_norm_lambda
             else:
                 regular = 0.0
 
@@ -104,6 +107,7 @@ class A2_Learner(BaseLearner):
                 y = y.view(-1)
             correct_label += torch.sum((pred_label == y)).item()
             loss_ += loss.detach().cpu().item()
+
         
         return loss_ / len(dataloader), correct_label / len(dataloader.dataset)
     
@@ -139,6 +143,8 @@ class A2_Learner(BaseLearner):
         self.load_loader(train_loader, valid_loader, eval_loader)
 
         start_time = self.cur_timestamp()
+        last_train_acc = 0.0
+        last_valid_acc = 0.0
         for i in range(self._epochs):
 
             log_info = dict()
@@ -159,10 +165,12 @@ class A2_Learner(BaseLearner):
             
             if i % self._log_interval == 0:
                 self.log_info(log_info)
-        
+            
+            if self._use_lr_deacy:
+                self.linear_lr_decay(i, self._epochs)
         
         end_time = self.cur_timestamp()
         hours, minitues, seconds = self.run_time(start_time, end_time)
         logger.success(f"fininsh training successfully! current time is {self.cur_timestamp(True)}, training process takes a total of {int(hours)}:{int(minitues)}:{int(seconds)}")
 
-                
+        return train_acc, valid_acc
