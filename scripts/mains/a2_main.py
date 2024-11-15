@@ -92,7 +92,7 @@ def main(args):
     for fold, (train_indexs, valid_index) in enumerate(kfold.split(cifar10_datasets.train_data)):
         # wandb init
         if all_args.use_wandb:
-            log_name = f'A2_{regular}_{normalization}_{fold}_seed{all_args.seed}_{int(time.time())}'
+            log_name = f'A2_{regular}_{normalization}_fold{fold}_seed{all_args.seed}_{int(time.time())}'
             wandb.init(
                 project = "ml_homework",
                 name = log_name,
