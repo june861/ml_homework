@@ -2,8 +2,13 @@
 '''
 @File    :   a2_runner.py
 @Time    :   2024/11/14 16:08:22
-@Author  :   junewluo 
+@Author  :   junewluo
 '''
+
+"""
+CNN For Cifar10 Classification
+"""
+
 import argparse
 import os
 import time
