@@ -12,6 +12,7 @@ import torch.nn.functional as F
 from math import floor
 from .mlp import MLPBase
 from utils import get_pool_func, get_activate_func
+from loguru import logger
 
 class ConvLayers(nn.Module):
     def __init__(self, 
@@ -50,7 +51,9 @@ class ConvLayers(nn.Module):
             self.w = floor((self.w + 2 * pool_padding - pool_kernel[index][0]) / pool_stride_w) + 1
             self.h = floor((self.h + 2 * pool_padding - pool_kernel[index][1]) / pool_stride_h) + 1
             self.convs.append(conv_layer)
-            self.pools.append(get_pool_func(pool_method, pool_kernel[index]))
+            pool = get_pool_func(pool_method, pool_kernel[index])
+            logger.info(f'use pool of {type(pool)}, pool metho is {pool_method}, current layer is {index}')
+            self.pools.append(pool)
         
         self.convs = nn.ModuleList(self.convs)
 

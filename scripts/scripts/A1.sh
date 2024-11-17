@@ -15,9 +15,28 @@ task="A1"
 epochs=100
 batch_size=64
 max_seed=1
+
+# relevant dir
 log_dir="./logs"
+res_dir="./result"
+data_dir="./data"
+runs_dir="./runs"
+dirs=(
+    "$log_dir"
+    "$res_dir"
+    "$data_dir"
+    "$runs_dir"
+)
 # if pwd isn't exist, create it.
-mkdir -p "$log_dir"
+for dir in "${dirs[@]}"; do
+    if [ ! -d $dir ]; then
+        mkdir -p $dir
+    else
+        echo "${dir} has existed. There is no need for recreate it!"
+    fi
+done
+
+
 
 for optim in "${optimizer[@]}"; do
     for lo in "${loss[@]}"; do
