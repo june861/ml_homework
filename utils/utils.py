@@ -13,6 +13,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
+from loguru import logger
 from sklearn.model_selection import KFold
 
 
@@ -35,8 +36,14 @@ def get_optimizer(optim_name, net: nn.Module, lr: float, **kwargs):
         optimizer = optim.SGD(params = net.parameters(), lr = lr)
     elif optim_name == "momentum":
         optimizer = optim.SGD(params = net.parameters(), lr = lr, momentum = kwargs["momentum"])
+    elif optim_name == "admax":
+        optimizer = optim.Adamax(params = net.parameters(), lr = lr)
+    elif optim_name == "rmsprop":
+        optimizer = optim.RMSprop(params = net.parameters(), lr = lr)
     else:
+        logger.error(f"we only support [adam, adamw, adagrad, sgd, momentum, admax, rmsprop] optimizer. but now recieve {optim_name}")
         raise NotImplementedError()
+
     return optimizer
 
 

@@ -48,11 +48,22 @@ class A1_Learner(BaseLearner):
             one_hot_y = F.one_hot(y, num_classes = self._num_classes).float().to(self._device)
             if ban_grad == False:
                 probs = self.net(x)
-                loss = self.criterion(probs, one_hot_y).mean()
+
+                # whether use a normalization method 
+                if self._use_l1_norm:
+                    regular = sum(torch.sum(torch.abs(param)) for param in self.net.parameters()) * self._l1_norm_lambda
+                elif self._use_l2_norm:
+                    regular = sum(p.pow(2.0).sum() for p in self.net.parameters()) * self._l2_norm_lambda
+                else:
+                    regular = 0.0
+                
+                loss = self.criterion(probs, one_hot_y).mean() + regular
                 # update
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
+
+
             else:
                 with torch.no_grad():
                     probs = self.net(x)

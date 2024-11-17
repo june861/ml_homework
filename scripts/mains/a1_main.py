@@ -88,21 +88,12 @@ def main(args):
     # define classification instance
     cifar_classification = A1_Learner(args = all_args)
 
-    log_info, img_info = cifar_classification.learn(train_loader, valid_loader, eval_loader)
+    _, img_info = cifar_classification.learn(train_loader, valid_loader, eval_loader)
 
     if all_args.use_wandb:
-        # log info to wandb
-        for metric, data in log_info.items():
-            for d in data:
-                wandb.log({str(metric): d})
-        
         for fig_name, fig_path in img_info.items():
             wandb.log({str(fig_name) : wandb.Image(os.path.join("./result/", fig_path))})
     else:
-        # log info to wandb
-        for metric, data in log_info.items():
-            for idx, d in enumerate(data): 
-                tb_writer.add_scalar(str(metric), d, idx)
         index = 0
         for fig_name, fig_path in img_info.items():
             index += 1

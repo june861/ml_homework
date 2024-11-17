@@ -1,15 +1,17 @@
 echo "Machine Learning Homework A1"
 optimizer=(
     # "adam"
-    "sgd"
+    # "sgd"
     # "adamw"
     # "adagrad"
+    # "adamax"
+    "rmsprop"
     # "momentum"
 )
     
 loss=(
     "entropy"
-    "mse"
+    # "mse"
 )
 task="A1"
 epochs=100

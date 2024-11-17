@@ -31,13 +31,19 @@ def get_config():
     parser.add_argument("--optim", type=str, default="adam", help="which optimizer should be use to update grad")
     parser.add_argument("--batch_size", type=int, default=64, help="batch size of a batch data")
     parser.add_argument("--activate_func", type=str, default="relu", help="the activate function for linear output")
-    parser.add_argument("--hidden_dims", nargs="+", default=[128,128], help="the dimensions of hidden layers")
+    parser.add_argument("--hidden_dims", nargs="+", type=int, default=[128,128], help="the dimensions of hidden layers")
     parser.add_argument("--epochs", type=int, default=100, help="the total training epoch")
     parser.add_argument("--valid_interval", type=int, default=3, help="the validation interval when training")
     parser.add_argument("--lr", type=float, default=1e-3, help="update steps")
     
+    # some trick
     parser.add_argument("--use_lr_decay", action="store_false", default=True, help="using a trick: learning rate decay")
     parser.add_argument("--lr_decay_policy", type=str, default="linear", help="which poilcy will be selected")
+    parser.add_argument("--use_l1_norm", action="store_true", default=False, help="")
+    parser.add_argument("--l1_norm_lambda", type=float, default=0.01, help="L1-regularization weight")
+    parser.add_argument("--use_l2_norm", action="store_true", default=False, help="")
+    parser.add_argument("--l2_norm_lambda", type=float, default=0.01, help="L2-regularization weight")
+
 
     return parser
 

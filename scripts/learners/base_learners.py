@@ -32,6 +32,11 @@ class BaseLearner(object):
         if not self._use_wandb:
             self._tb_writer = args.tb_writer
 
+        self._use_l1_norm = args.use_l1_norm
+        self._l1_norm_lambda = args.l1_norm_lambda
+        self._use_l2_norm = args.use_l2_norm
+        self._l2_norm_lambda = args.l2_norm_lambda
+
         self.train_loader = None
         self.valid_loader = None
         self.eval_loader = None

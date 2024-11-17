@@ -5,6 +5,7 @@ runs/
 wandb/
 result/
 logs/
+.vscode/
 
 # 忽略所有 .pyc 文件
 *.pyc

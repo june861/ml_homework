@@ -39,11 +39,6 @@ class A2_Learner(BaseLearner):
         self._use_dropout = args.use_dropout
         self._dropout_ratio = args.dropout_ratio
 
-        self._use_l1_norm = args.use_l1_norm
-        self._l1_norm_lambda = args.l1_norm_lambda
-        self._use_l2_norm = args.use_l2_norm
-        self._l2_norm_lambda = args.l2_norm_lambda
-
         self.net = CNNBase(input_size = args.input_size,
                            channels = self._channels,
                            kernels = self._kernels,

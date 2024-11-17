@@ -47,11 +47,6 @@ def parse_args(args, parser: argparse.ArgumentParser):
     parser.add_argument("--num_classes", type=int, default=10, help="the number of classes when doing classification")
     parser.add_argument("--kfold", type=int, default=5, help="")
 
-    parser.add_argument("--use_l1_norm", action="store_true", default=False, help="")
-    parser.add_argument("--l1_norm_lambda", type=float, default=0.01, help="L1-regularization weight")
-    parser.add_argument("--use_l2_norm", action="store_true", default=False, help="")
-    parser.add_argument("--l2_norm_lambda", type=float, default=0.01, help="L2-regularization weight")
-
 
     all_args = parser.parse_known_args(args)[0]
 
