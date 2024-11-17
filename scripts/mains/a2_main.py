@@ -49,7 +49,7 @@ def parse_args(args, parser: argparse.ArgumentParser):
 
     parser.add_argument("--use_l1_norm", action="store_true", default=False, help="")
     parser.add_argument("--l1_norm_lambda", type=float, default=0.01, help="L1-regularization weight")
-    parser.add_argument("--use_l2_norm", action="store_true", default=True, help="")
+    parser.add_argument("--use_l2_norm", action="store_true", default=False, help="")
     parser.add_argument("--l2_norm_lambda", type=float, default=0.01, help="L2-regularization weight")
 
 
@@ -120,6 +120,12 @@ def main(args):
 
         fig_name = f"A2-{regular}_{normalization}_{fold}_{all_args.seed}.png"
         _, test_acc, test_loss = cnn_cifar10.eval(cnn_cifar10.eval_loader, make_confuse = True, fig_name = fig_name)
+
+        if all_args.use_wandb:
+            try:
+                wandb.log({str(fig_name) : wandb.Image(os.path.join("./result/", fig_name))})
+            except:
+                logger.info(f"log image {fig_name} failed ! current fold is {fold}, we will pass this log automatically!")
         
         accs.append((train_acc, valid_acc, test_acc))
         if test_acc > best_test_acc:

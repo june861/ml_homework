@@ -6,6 +6,7 @@
 '''
 
 import os
+import wandb
 import torch
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -69,33 +70,33 @@ class A1_Learner(BaseLearner):
 
     def learn(self, train_loader, valid_loader, eval_loader):
         self.load_loader(train_loader, valid_loader, eval_loader)
-        log_info = {
-            "train_loss": [],
-            "train_acc" : [],
-            "valid_loss" : [],
-            "valid_acc": [],
-        }
         img_info = {}
 
         logger.info(f"training will start! total epoch is {self._epochs}, the size of training data is {len(self.train_loader)} batch and size of validation data is {len(self.valid_loader)} batch")
         valid_steps = 0
         for i in range(self._epochs):
-            mean_train_loss , train_acc = self.one_episode(self.train_loader)
-            log_info["train_acc"].append(train_acc)
-            log_info["train_loss"].append(mean_train_loss)
+            log_info = {}
+            log_info["steps"] = i
 
-            if i % self._log_interval == 0:
-                logger.info(f"train steps: {i}  |  train acc: {round(train_acc,5) * 100}%  |  train loss: {round(mean_train_loss, 8)}")
+            mean_train_loss , train_acc = self.one_episode(self.train_loader)
+            log_info["train_acc"] = train_acc
+            log_info["train_loss"] = mean_train_loss
 
             if i % self._valid_interval == 0 or (i+1) == self._epochs:
                 mean_valid_loss, valid_acc = self.one_episode(self.valid_loader, ban_grad = True)
-                log_info["valid_acc"].append(valid_acc)
-                log_info["valid_loss"].append(mean_valid_loss)
-                logger.success(f"validation execute success! valid steps: {valid_steps}  |  valid acc: {round(train_acc,5) * 100}%  |  valid loss: {round(mean_train_loss, 3)}")
+                log_info["valid_acc"] = valid_acc
+                log_info["valid_loss"]=  mean_valid_loss
+                logger.success(f"validation execute success! valid steps: {valid_steps}  |  valid acc: {round(valid_acc,5) * 100}%  |  valid loss: {round(mean_valid_loss, 5)}")
                 valid_steps += 1
+
+            if i % self._log_interval == 0:
+                # logger.info(f"train steps: {i}  |  train acc: {round(train_acc,5) * 100}%  |  train loss: {round(mean_train_loss, 8)}")
+                self.log_info(log_info)
 
             if self._use_lr_deacy:
                 self.linear_lr_decay(cur_steps = i, total_steps = self._epochs)
+            
+
 
         test_acc, fig_name = self.eval()
         img_info["fig_name"] = fig_name

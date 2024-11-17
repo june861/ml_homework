@@ -29,10 +29,10 @@ from tensorboardX import SummaryWriter
 def parse_args(args, parser):
 
     parser.add_argument("--split_ratio", type=float, default=0.3, help="random split ratio for spliting training datatset")
-    parser.add_argument("--optim", type=str, default="adam", help="which optimizer should be use to update grad")
+    #parser.add_argument("--optim", type=str, default="adam", help="which optimizer should be use to update grad")
     parser.add_argument("--loss", type=str, default="entropy", help="which loss function will be used", choices=["mse","entropy"])
     parser.add_argument("--momentum", type=float, default=0.2, help="momentum optimizer")
-    parser.add_argument("--log_interval", type=int, default=1, help="log metric interval")
+    #parser.add_argument("--log_interval", type=int, default=1, help="log metric interval")
     parser.add_argument("--num_classes", type=int, default=10, help="the number of classes when doing classification")
     all_args = parser.parse_known_args(args)[0]
 
@@ -61,15 +61,7 @@ def main(args):
                                 ])
     transform_eval = transform
 
-    # load dataset
-    cifar10_datasets = CIFAR10(transform_train = transform, transforma_eval = transform_eval, split_ratio = 0.3)
-    cifar10_datasets.load_cifar_from_torch(load_train = True)
-    cifar10_datasets.load_cifar_from_torch(load_train = False)
-    cifar10_datasets.random_split_data()
 
-    train_loader = DataLoader(dataset = cifar10_datasets.train_data, batch_size = all_args.batch_size)
-    valid_loader = DataLoader(dataset = cifar10_datasets.valid_data, batch_size = all_args.batch_size)
-    eval_loader = DataLoader(dataset = cifar10_datasets.test_data, batch_size = all_args.batch_size)
 
     # wandb init
     if all_args.use_wandb:
@@ -82,6 +74,16 @@ def main(args):
     else:
         log_dir = f'./runs/A1_{all_args.optim}_{all_args.loss}_{all_args.batch_size}_seed{all_args.seed}_{int(time.time())}_{os.getppid()}'
         tb_writer = SummaryWriter(log_dir)
+
+    # load dataset
+    cifar10_datasets = CIFAR10(transform_train = transform, transforma_eval = transform_eval, split_ratio = 0.3)
+    cifar10_datasets.load_cifar_from_torch(load_train = True)
+    cifar10_datasets.load_cifar_from_torch(load_train = False)
+    cifar10_datasets.random_split_data()
+
+    train_loader = DataLoader(dataset = cifar10_datasets.train_data, batch_size = all_args.batch_size)
+    valid_loader = DataLoader(dataset = cifar10_datasets.valid_data, batch_size = all_args.batch_size)
+    eval_loader = DataLoader(dataset = cifar10_datasets.test_data, batch_size = all_args.batch_size)
 
     # define classification instance
     cifar_classification = A1_Learner(args = all_args)

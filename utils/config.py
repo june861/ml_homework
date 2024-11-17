@@ -12,12 +12,13 @@ def get_config():
     parser = argparse.ArgumentParser(
         description='ml_homework', formatter_class=argparse.RawDescriptionHelpFormatter)
     # task description
-    parser.add_argument("--task", type=str, default="ml-homework", help="task name")
+    parser.add_argument("--task", type=str, help="task name",required=True)
 
     # cuda device setting
     parser.add_argument("--use_cuda", action="store_false", default=True, help="whether use cuda device to execute training process")
     parser.add_argument("--cuda_rank", type=int, default=0, help="which cuda device to use")
     parser.add_argument("--use_wandb", action="store_true", default=True, help="use wandb or tensorboard")
+    parser.add_argument("--group", type=str, default=None, help="group name of wandb project")
     parser.add_argument("--seed", type=int, default=1, help="random seed")
 
     # Network Setting

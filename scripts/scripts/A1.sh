@@ -9,12 +9,12 @@ optimizer=(
     
 loss=(
     "entropy"
-    # "mse"
+    "mse"
 )
 task="A1"
-epochs=200
+epochs=100
 batch_size=64
-max_seed=3
+max_seed=1
 log_dir="./logs"
 # if pwd isn't exist, create it.
 mkdir -p "$log_dir"
