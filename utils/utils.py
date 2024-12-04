@@ -52,6 +52,8 @@ def which_loss_criterion(loss_name):
         return F.mse_loss
     elif loss_name == "entropy":
         return F.cross_entropy
+    elif loss_name == "nll":
+        return F.nll_loss
     else:
         raise NotImplementedError()
 

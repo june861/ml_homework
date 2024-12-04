@@ -9,3 +9,5 @@ from .mlp import *
 from .config import *
 from .utils import *
 from .cnn import *
+from .rnn import *
+from .parallel_runner import *

@@ -8,7 +8,7 @@
 import random
 import torch
 import torchvision
-from torch.utils.data import random_split
+from torch.utils.data import random_split, Dataset
 from loguru import logger
 
 
@@ -58,3 +58,27 @@ class CIFAR10(object):
         self.train_data = train_dataset
         self.valid_data = valid_dataset
         logger.info(f"split validation dataset from train dataset! split ratio is {self.split_ratio}")
+
+
+
+class NameDataset(Dataset):
+    def __init__(self, sequences, vocab, char2idx, idx2char):
+        super(NameDataset, self).__init__()
+        self._vocab = vocab
+        self._char2idx = char2idx
+        self._idx2char = idx2char
+        self._sequences = sequences
+        self._vocab_size = len(self._vocab)
+    
+    def __getitem__(self, index):
+        name = self._sequences[index]
+        shape = (len(name) - 1, self._vocab_size)
+
+        x, y = torch.zeros(shape, dtype=torch.long), torch.zeros(shape, dtype=torch.long)
+        x[torch.arange(0, shape[0]), name[:-1]] = 1.0
+        y[torch.arange(0, shape[0]), name[1:]] = 1.0
+
+        return x, y
+
+    def __len__(self):
+        return len(self._sequences)

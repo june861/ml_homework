@@ -28,6 +28,7 @@ dirs=(
 for dir in "${dirs[@]}"; do
     if [ ! -d $dir ]; then
         mkdir -p $dir
+	echo "${dir} will be created!"
     else
         echo "${dir} has existed. There is no need for recreate it!"
     fi

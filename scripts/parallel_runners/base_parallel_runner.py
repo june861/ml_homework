@@ -1,17 +1,25 @@
 # -*- encoding: utf-8 -*-
 '''
-@File    :   base_learners.py
-@Time    :   2024/11/14 16:00:32
-@Author  :   junewluo 
+@File       :parallel_runner.py
+@Description:
+@Date       :2024/12/03 19:38:56
+@Author     :junweiluo
+@Version    :python
 '''
-import wandb
 import os
-import time
+import wandb
 import datetime
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.multiprocessing as mp
+import torch.distributed as dist
+from torch.utils.data import DataLoader, Dataset
 from utils import get_activate_func
 from loguru import logger
+import time
 
-class BaseLearner(object):
+class ParallelBaseRunner(object):
     def __init__(self, args):
 
         self._ppid = os.getppid()
@@ -36,11 +44,16 @@ class BaseLearner(object):
         self._l1_norm_lambda = args.l1_norm_lambda
         self._use_l2_norm = args.use_l2_norm
         self._l2_norm_lambda = args.l2_norm_lambda
+        
+        self._num_works = args.num_works
 
         self.train_loader = None
         self.valid_loader = None
         self.eval_loader = None
 
+    def worker(self):
+        raise NotImplementedError
+    
     def load_loader(self, train_loader, valid_loader, eval_loader):
         self.train_loader = train_loader
         self.valid_loader = valid_loader
@@ -80,7 +93,6 @@ class BaseLearner(object):
         else:
             for k,v in info.items():
                 self._tb_writer.add_scalar(k,v)
-
     
     def forward(self):
         raise NotImplementedError

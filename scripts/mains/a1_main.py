@@ -74,6 +74,7 @@ def main(args):
     else:
         log_dir = f'./runs/A1_{all_args.optim}_{all_args.loss}_{all_args.batch_size}_seed{all_args.seed}_{int(time.time())}_{os.getppid()}'
         tb_writer = SummaryWriter(log_dir)
+        all_args.tb_writer = tb_writer
 
     # load dataset
     cifar10_datasets = CIFAR10(transform_train = transform, transforma_eval = transform_eval, split_ratio = 0.3)

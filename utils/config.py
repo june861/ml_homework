@@ -16,8 +16,9 @@ def get_config():
 
     # cuda device setting
     parser.add_argument("--use_cuda", action="store_false", default=True, help="whether use cuda device to execute training process")
-    parser.add_argument("--cuda_rank", type=int, default=0, help="which cuda device to use")
-    parser.add_argument("--use_wandb", action="store_true", default=True, help="use wandb or tensorboard")
+    parser.add_argument("--cuda_rank", type=int, default=2, help="which cuda device to use")
+    parser.add_argument("--use_wandb", action="store_false", default=True, help="use wandb or tensorboard")
+    parser.add_argument("--wandb_group", type=str, default=None, help="wandb.project parameter 'group'")
     parser.add_argument("--group", type=str, default=None, help="group name of wandb project")
     parser.add_argument("--seed", type=int, default=1, help="random seed")
 
